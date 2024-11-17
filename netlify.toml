@@ -6,9 +6,13 @@
   NODE_VERSION = "18"
 
 [functions]
-  external_node_modules = ["@prisma/client", "@prisma/extension-accelerate"]
+  external_node_modules = ["@prisma/client"]
   included_files = ["prisma/**"]
   node_bundler = "esbuild"
+
+[functions.api]
+  memory = 3008
+  timeout = 60
 
 [[redirects]]
   from = "/api/*"
