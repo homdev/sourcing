@@ -1,12 +1,15 @@
 [build]
-  command = "npx prisma generate && npm run build"
+  command = "npm run build"
   publish = ".next"
 
   [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  to = "/.netlify/functions/api/:splat"
   status = 200
 
 [functions]
-  directory = "api"
+  directory = "netlify/functions"
   node_bundler = "esbuild"
+
+[build.environment]
+  NEXT_TELEMETRY_DISABLED = "1"

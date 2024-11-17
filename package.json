@@ -9,7 +9,9 @@
     "lint": "next lint",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "prisma:generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "netlify-build": "npm run build && npm run copy-functions",
+    "copy-functions": "cp -r api/* netlify/functions/"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
