@@ -20,14 +20,15 @@
   node_bundler = "esbuild"
 
 [functions.api]
-  memory = 2048
-  timeout = 30
+  memory = 3008
+  timeout = 60
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "18"
   CHROME_AWS_LAMBDA_CACHE = "true"
   PRISMA_GENERATE_DATAPROXY = "true"
+  PRISMA_CLIENT_ENGINE_TYPE = "dataproxy"
 
 [[redirects]]
   from = "/api/*"
