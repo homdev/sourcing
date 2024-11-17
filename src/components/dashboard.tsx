@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, MapPin, Phone, Globe, Star, Users, Menu, Home, Mail, UserPlus, Settings, List, Grid } from 'lucide-react'
+import { Search, MapPin, Phone, Globe, Star, Users, Menu, Home, Mail, UserPlus, Settings } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -161,7 +161,7 @@ export function DashboardComponent() {
                 <>
                   <Card>
                     <CardHeader>
-                      <CardTitle>Recherche d'entreprises</CardTitle>
+                      <CardTitle>Recherche Entreprises</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
