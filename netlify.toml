@@ -18,12 +18,13 @@
     "src/services/scraping/**"
   ]
   node_bundler = "esbuild"
+  # Configuration de la mémoire pour les fonctions
+  memory_size = 2048
+  timeout = 30
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "18"
-  # Configuration pour chrome-aws-lambda
-  AWS_LAMBDA_FUNCTION_MEMORY_SIZE = "2048"
   CHROME_AWS_LAMBDA_CACHE = "true"
 
 [[redirects]]
