@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id           String        @id @default(cuid())
+  name         String
+  rating       Float?
+  reviews      Int?
+  phone        String?
+  address      String?
+  website      String?
+  email        String?
+  category     String?
+  description  String?
+  latitude     Float?
+  longitude    Float?
+  city         String?
+  postalCode   String?
+  country      String?
+  placeId      String?       @unique
+  status       Status        @default(NEW)
+  source       String        @default("google")
+  lastScraped  DateTime?
+  createdAt    DateTime      @default(now())
+  lastUpdate   DateTime      @updatedAt
+  contacts     Contact[]
+  scrapingLogs ScrapingLog[]
+  tags         Tag[]         @relation("CompanyToTag")
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String?
+  role      String?
+  email     String?
+  phone     String?
+  linkedin  String?
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company   Company  @relation(fields: [companyId], references: [id])
+}
+
+model ScrapingLog {
+  id        String   @id @default(cuid())
+  status    Status
+  message   String?
+  error     String?
+  companyId String
+  createdAt DateTime @default(now())
+  company   Company  @relation(fields: [companyId], references: [id])
+}
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  companies Company[] @relation("CompanyToTag")
+}
+
+enum Status {
+  NEW
+  ACTIVE
+  INACTIVE
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
