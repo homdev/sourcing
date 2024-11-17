@@ -1,42 +1,42 @@
-import puppeteer from 'puppeteer';
-import type { Browser } from 'puppeteer';
+import chromium from 'chrome-aws-lambda'
+import { Browser, Page } from 'puppeteer-core'
 
 export class GooglePlacesScraper {
-  private browser: Browser | null = null;
+  private browser: Browser | null = null
 
   async init() {
-    try {
-      console.log('Initialisation du navigateur...');
-      this.browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: null,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
-          '--disable-gpu',
-          '--start-maximized'
-        ]
-      });
-      console.log('Navigateur initialisé avec succès');
-    } catch (error) {
-      console.error('Erreur lors de l\'initialisation du navigateur:', error);
-      throw error;
-    }
+    const executablePath = process.env.CHROME_EXECUTABLE_PATH || await chromium.executablePath
+
+    this.browser = await chromium.puppeteer.launch({
+      args: [...chromium.args, '--hide-scrollbars', '--disable-web-security'],
+      defaultViewport: chromium.defaultViewport,
+      executablePath,
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true
+    })
   }
 
   async scrapeCompany(query: string, location: string) {
-    if (!this.browser) await this.init();
-    const page = await this.setupPage();
+    if (!this.browser) await this.init()
+    const page = await this.setupPage()
 
     try {
-      const searchQuery = encodeURIComponent(`${query} ${location}`);
-      const url = `https://www.google.fr/maps/search/${searchQuery}`;
-      console.log('URL de recherche:', url);
+      const searchQuery = encodeURIComponent(`${query} ${location}`)
+      const url = `https://www.google.fr/maps/search/${searchQuery}`
+      
+      await page.setRequestInterception(true)
+      page.on('request', (request) => {
+        if (['image', 'stylesheet', 'font'].includes(request.resourceType())) {
+          request.abort()
+        } else {
+          request.continue()
+        }
+      })
 
-      await page.goto(url, { waitUntil: 'networkidle0' });
-      console.log('Page chargée');
+      await page.goto(url, { 
+        waitUntil: 'networkidle0',
+        timeout: 30000 
+      })
 
       // Gestion du popup de consentement
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -89,7 +89,7 @@ export class GooglePlacesScraper {
           noNewResultsCount = 0;
         }
 
-        await page.waitForNetworkIdle({ timeout: 3000 }).catch(() => {});
+        await page.waitForTimeout(3000);
       }
 
       // Extraction des données
@@ -224,34 +224,31 @@ export class GooglePlacesScraper {
       return companies;
 
     } catch (error) {
-      console.error('Erreur lors du scraping:', error);
-      await page.screenshot({ path: 'error-screenshot.png' });
-      throw error;
+      console.error('Erreur lors du scraping:', error)
+      throw error
     } finally {
-      await page.close();
+      await page.close()
     }
   }
 
   private async setupPage() {
-    if (!this.browser) await this.init();
-    const page = await this.browser!.newPage();
+    if (!this.browser) await this.init()
+    const page = await this.browser!.newPage()
     
-    page.on('console', msg => console.log('Console du navigateur:', msg.text()));
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
     
-    page.setDefaultTimeout(30000);
-    page.setDefaultNavigationTimeout(30000);
+    await page.setViewport({
+      width: 1920,
+      height: 1080
+    })
 
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-
-    return page;
+    return page
   }
 
   async close() {
     if (this.browser) {
-      console.log('Fermeture du navigateur...');
-      await this.browser.close();
-      this.browser = null;
-      console.log('Navigateur fermé');
+      await this.browser.close()
+      this.browser = null
     }
   }
 }

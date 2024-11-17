@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma, Status } from '@prisma/client';
 import type { SearchFilters, PaginatedResponse, Company } from '@/types/dashboard';
+import type { ScrapedCompany } from '@/types/dashboard';
 
 export class CompanyService {
   static async getCompanies(params: {
@@ -151,19 +152,22 @@ export class CompanyService {
     }
   }
 
-  static async saveScrapedCompanies(companies: Array<{
-    name: string;
-    rating: number;
-    reviews: number;
-    address: string;
-    phone: string;
-    website: string;
-  }>) {
-    console.log('Sauvegarde des entreprises...');
-    const savedCompanies = await Promise.all(
-      companies.map(company => this.createOrUpdateCompany(company))
-    );
-    console.log(`${savedCompanies.length} entreprises sauvegardées`);
-    return savedCompanies;
+  static async saveScrapedCompanies(companies: ScrapedCompany[]) {
+    return Promise.all(
+      companies.map(company => 
+        prisma.company.create({
+          data: {
+            name: company.name,
+            address: company.address,
+            phone: company.phone,
+            website: company.website,
+            rating: typeof company.rating === 'string' ? parseFloat(company.rating) : company.rating,
+            reviews: typeof company.reviews === 'string' ? parseInt(company.reviews) : company.reviews,
+            status: 'COMPLETED',
+            source: 'GOOGLE_PLACES'
+          }
+        })
+      )
+    )
   }
 }

@@ -26,7 +26,7 @@ export function SourcingContent() {
   } = useQuery({
     queryKey: ['companies', currentPage, itemsPerPage, searchQuery],
     queryFn: async () => {
-      const response = await fetch(`/.netlify/functions/server/api/companies?${new URLSearchParams({
+      const response = await fetch(`/.netlify/functions/api/companies?${new URLSearchParams({
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
         filters: JSON.stringify({
@@ -49,26 +49,25 @@ export function SourcingContent() {
 
   const scrapeMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch('/api/scraping', {
+      const response = await fetch('/.netlify/functions/api/scraping', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: searchQuery, location: searchLocation })
-      });
+      })
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Erreur lors du scraping');
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Erreur lors du scraping')
       }
       
-      const data = await response.json();
-      return data as { success: boolean; message: string; data: Company[] };
+      return response.json()
     },
     onSuccess: (data) => {
-      toast.success(data.message || 'Scraping terminé avec succès');
-      refetch();
+      toast.success(data.message || 'Scraping terminé avec succès')
+      refetch()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Erreur lors du scraping');
+      toast.error(error.message || 'Erreur lors du scraping')
     }
   })
 

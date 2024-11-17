@@ -7,10 +7,27 @@
   package = "@netlify/plugin-nextjs"
 
 [functions]
-  external_node_modules = ["@prisma/client", "prisma"]
-  included_files = ["prisma/**"]
+  external_node_modules = [
+    "@prisma/client",
+    "prisma",
+    "chrome-aws-lambda",
+    "puppeteer-core"
+  ]
+  included_files = [
+    "prisma/**",
+    "src/services/scraping/**"
+  ]
   node_bundler = "esbuild"
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "18"
+  # Configuration pour chrome-aws-lambda
+  AWS_LAMBDA_FUNCTION_MEMORY_SIZE = "2048"
+  CHROME_AWS_LAMBDA_CACHE = "true"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true

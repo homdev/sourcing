@@ -14,6 +14,15 @@ export interface Annonce {
     annonce: Annonce
   }
 
+export interface ScrapedCompany {
+  name: string
+  rating: string | number
+  reviews: string | number
+  phone: string
+  address: string
+  website: string
+}
+
 export interface Company {
   id: string
   name: string
