@@ -6,7 +6,7 @@ import type { ScrapedCompany } from '../../src/types/dashboard'
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DIRECT_URL
+      url: process.env.DATABASE_URL
     }
   },
   log: ['query', 'info', 'warn', 'error']
@@ -14,7 +14,7 @@ const prisma = new PrismaClient({
 
 export const handler: Handler = async (event) => {
   try {
-    console.log('Direct URL:', process.env.DIRECT_URL)
+    console.log('Database URL:', process.env.DATABASE_URL)
     console.log('Event path:', event.path)
     console.log('Event method:', event.httpMethod)
 
