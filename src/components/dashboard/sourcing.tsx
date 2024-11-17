@@ -26,19 +26,19 @@ export function SourcingContent() {
   } = useQuery({
     queryKey: ['companies', currentPage, itemsPerPage, searchQuery],
     queryFn: async () => {
-      const params = new URLSearchParams({
+      const response = await fetch(`/.netlify/functions/server/api/companies?${new URLSearchParams({
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
         filters: JSON.stringify({
           search: searchQuery,
           location: searchLocation
         })
-      })
-      
-      const response = await fetch(`/api/companies?${params}`)
+      })}`)
+
       if (!response.ok) {
-        throw new Error('Failed to fetch companies')
+        throw new Error('Erreur lors de la récupération des données')
       }
+
       return response.json()
     }
   })
