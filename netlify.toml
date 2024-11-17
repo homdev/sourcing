@@ -2,14 +2,12 @@
   command = "npm run build"
   publish = ".next"
 
-  [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200
-
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [build.environment]
-  NEXT_TELEMETRY_DISABLED = "1"
+  NEXT_USE_NETLIFY_EDGE = "true"
+  NODE_VERSION = "18"
+
+[functions]
+  included_files = ["node_modules/@prisma/client/**/*", "node_modules/.prisma/**/*"]
