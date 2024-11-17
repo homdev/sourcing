@@ -13,6 +13,16 @@ export interface NetlifyEvent extends Omit<HandlerEvent, 'headers'> {
 }
 
 export interface NetlifyContext extends HandlerContext {
-  clientContext: { [key: string]: any }
-  user: { [key: string]: any }
+  clientContext: Record<string, unknown>
+  user: Record<string, unknown>
+  callbackWaitsForEmptyEventLoop: boolean
+  functionName: string
+  functionVersion: string
+  invokedFunctionArn: string
+  memoryLimitInMB: string
+  awsRequestId: string
+  logGroupName: string
+  logStreamName: string
+  identity: Record<string, unknown> | undefined
+  done: (error?: Error, result?: unknown) => void
 }

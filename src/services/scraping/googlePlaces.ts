@@ -1,5 +1,5 @@
 import chromium from 'chrome-aws-lambda'
-import { Browser, Page } from 'puppeteer-core'
+import { Browser } from 'puppeteer-core'
 
 export class GooglePlacesScraper {
   private browser: Browser | null = null
