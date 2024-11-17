@@ -8,7 +8,7 @@ export class GooglePlacesScraper {
     try {
       console.log('Initialisation du navigateur...');
       this.browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: null,
         args: [
           '--no-sandbox',
