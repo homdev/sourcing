@@ -3,10 +3,11 @@
   publish = ".next"
 
 [build.environment]
+  PRISMA_CLIENT_ENGINE_TYPE = "dataproxy"
   NODE_VERSION = "18"
 
 [functions]
-  external_node_modules = ["@prisma/client"]
+  external_node_modules = ["@prisma/client", "@prisma/extension-accelerate"]
   included_files = ["prisma/**"]
   node_bundler = "esbuild"
 

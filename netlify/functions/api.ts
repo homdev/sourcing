@@ -1,37 +1,19 @@
 import { Handler } from '@netlify/functions'
-import { PrismaClient } from '.prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { GooglePlacesScraper } from '../../src/services/scraping/googlePlaces'
 import type { ScrapedCompany } from '../../src/types/dashboard'
 
-// Singleton pattern pour PrismaClient
-let prisma: PrismaClient
-
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient({
-    log: ['query', 'error', 'warn'],
-    datasources: {
-      db: {
-        url: process.env.DIRECT_URL
-      }
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL
     }
-  })
-} else {
-  if (!global.prisma) {
-    global.prisma = new PrismaClient({
-      log: ['query', 'error', 'warn'],
-      datasources: {
-        db: {
-          url: process.env.DIRECT_URL
-        }
-      }
-    })
   }
-  prisma = global.prisma
-}
+})
 
 export const handler: Handler = async (event) => {
   try {
-    console.log('Database URL:', process.env.DIRECT_URL)
+    console.log('Database URL:', process.env.DATABASE_URL)
     console.log('Event path:', event.path)
     console.log('Event method:', event.httpMethod)
 
