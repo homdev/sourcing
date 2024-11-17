@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { MapPin, Phone, Globe, Star } from 'lucide-react'
 import toast from 'react-hot-toast'
-import type { Company, CompanyListViewProps, CompanyGridViewProps } from '@/types/dashboard'
+import type { CompanyListViewProps, CompanyGridViewProps } from '@/types/dashboard'
 
 export function SourcingContent() {
   const [searchQuery, setSearchQuery] = useState('')
