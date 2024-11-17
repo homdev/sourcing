@@ -3,7 +3,13 @@ import { PrismaClient } from '@prisma/client'
 import { GooglePlacesScraper } from '../../src/services/scraping/googlePlaces'
 import type { ScrapedCompany } from '../../src/types/dashboard'
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL
+    }
+  }
+})
 
 export const handler: Handler = async (event) => {
   try {

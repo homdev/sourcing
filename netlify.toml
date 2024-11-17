@@ -27,6 +27,7 @@
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_VERSION = "18"
   CHROME_AWS_LAMBDA_CACHE = "true"
+  PRISMA_GENERATE_DATAPROXY = "true"
 
 [[redirects]]
   from = "/api/*"
