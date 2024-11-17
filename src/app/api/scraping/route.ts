@@ -6,25 +6,42 @@ export async function POST(request: Request) {
   try {
     const { query, location } = await request.json()
     
-    // Scraping
+    // Validation des entrées
+    if (!query || !location) {
+      return NextResponse.json(
+        { success: false, error: 'Query et location sont requis' },
+        { status: 400 }
+      )
+    }
+    
+    // Ajoutez des logs
+    console.log('Démarrage du scraping pour:', { query, location })
+    
     const scraper = new GooglePlacesScraper()
-    const scrapedCompanies = await scraper.scrapeCompany(query, location)
     
-    // Sauvegarde en base de données
-    const savedCompanies = await CompanyService.saveScrapedCompanies(scrapedCompanies)
-    
-    // Fermeture du navigateur
-    await scraper.close()
-    
-    return NextResponse.json({ 
-      success: true, 
-      data: savedCompanies,
-      message: `${savedCompanies.length} entreprises sauvegardées`
-    })
+    try {
+      const scrapedCompanies = await scraper.scrapeCompany(query, location)
+      console.log('Entreprises scrapées:', scrapedCompanies.length)
+      
+      const savedCompanies = await CompanyService.saveScrapedCompanies(scrapedCompanies)
+      console.log('Entreprises sauvegardées:', savedCompanies.length)
+      
+      return NextResponse.json({ 
+        success: true, 
+        data: savedCompanies,
+        message: `${savedCompanies.length} entreprises sauvegardées`
+      })
+    } finally {
+      await scraper.close()
+    }
   } catch (error) {
-    console.error('Erreur API:', error)
+    console.error('Erreur détaillée du scraping:', error)
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : 'Une erreur est survenue' },
+      { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Une erreur est survenue',
+        details: error instanceof Error ? error.stack : undefined
+      },
       { status: 500 }
     )
   }

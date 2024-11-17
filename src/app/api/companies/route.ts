@@ -11,7 +11,11 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const filters = JSON.parse(searchParams.get('filters') || '{}')
     
-    const skip = (page - 1) * limit
+    if (!prisma) {
+      throw new Error('La connexion à la base de données n\'est pas établie')
+    }
+    
+    console.log('Filtres reçus:', filters)
     
     const where = {
       ...(filters.search && {
@@ -19,15 +23,12 @@ export async function GET(request: NextRequest) {
           { name: { contains: filters.search, mode: 'insensitive' } },
           { city: { contains: filters.search, mode: 'insensitive' } }
         ]
-      }),
-      ...(filters.status && { status: filters.status }),
-      ...(filters.city && { city: filters.city }),
-      ...(filters.category && { category: filters.category })
+      })
     }
 
     const [items, total] = await Promise.all([
       prisma.company.findMany({
-        skip,
+        skip: (page - 1) * limit,
         take: limit,
         where,
         include: {
@@ -50,9 +51,12 @@ export async function GET(request: NextRequest) {
       totalPages: Math.ceil(total / limit)
     })
   } catch (error) {
-    console.error('Error fetching companies:', error)
+    console.error('Erreur détaillée:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch companies' },
+      { 
+        error: 'Erreur lors de la récupération des entreprises',
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      },
       { status: 500 }
     )
   }
