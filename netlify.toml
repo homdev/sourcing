@@ -18,8 +18,9 @@
     "src/services/scraping/**"
   ]
   node_bundler = "esbuild"
-  # Configuration de la mémoire pour les fonctions
-  memory_size = 2048
+
+[functions.api]
+  memory = 2048
   timeout = 30
 
 [build.environment]
