@@ -1,15 +1,10 @@
 import { Handler } from '@netlify/functions'
 import { PrismaClient } from '@prisma/client'
+import { withAccelerate } from '@prisma/extension-accelerate'
 import { GooglePlacesScraper } from '../../src/services/scraping/googlePlaces'
 import type { ScrapedCompany } from '../../src/types/dashboard'
 
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL
-    }
-  }
-})
+const prisma = new PrismaClient().$extends(withAccelerate())
 
 export const handler: Handler = async (event) => {
   try {
