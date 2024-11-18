@@ -1,28 +1,14 @@
-import chromium from 'chrome-aws-lambda'
+import chromium from '@sparticuz/chromium'
 import { Browser, Page, Request } from 'puppeteer-core'
 
 export class GooglePlacesScraper {
   private browser: Browser | null = null
 
   async init() {
-    const executablePath = await chromium.executablePath
-
-    if (!executablePath) {
-      throw new Error('Chrome executable not found')
-    }
-
     this.browser = await chromium.puppeteer.launch({
-      args: [
-        ...chromium.args,
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--disable-gpu',
-        '--lang=fr-FR,fr'
-      ],
+      args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: executablePath,
+      executablePath: await chromium.executablePath,
       headless: chromium.headless,
       ignoreHTTPSErrors: true
     })
@@ -247,7 +233,7 @@ export class GooglePlacesScraper {
     if (!this.browser) await this.init()
     const page = await this.browser!.newPage()
     
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36')
     
     await page.setViewport({
       width: 1920,

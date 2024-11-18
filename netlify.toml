@@ -6,13 +6,13 @@
   NODE_VERSION = "18"
 
 [functions]
-  external_node_modules = ["@prisma/client", "chrome-aws-lambda", "puppeteer-core"]
-  included_files = ["prisma/**", "node_modules/chrome-aws-lambda/**"]
+  external_node_modules = ["@prisma/client", "@sparticuz/chromium"]
+  included_files = ["prisma/**"]
   node_bundler = "esbuild"
 
 [functions.api]
   memory = 3008
-  timeout = 30
+  timeout = 60
 
 [[redirects]]
   from = "/api/*"
