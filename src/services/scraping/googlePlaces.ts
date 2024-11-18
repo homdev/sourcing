@@ -16,7 +16,7 @@ export class GooglePlacesScraper {
       ],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath,
-      headless: chromium.headless,
+      headless: true,
       ignoreHTTPSErrors: true
     })
   }
