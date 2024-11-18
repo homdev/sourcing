@@ -1,12 +1,19 @@
 import chromium from '@sparticuz/chromium'
-import { Browser, Page, Request } from 'puppeteer-core'
+import puppeteer from 'puppeteer-core'
+import type { Browser, Page } from 'puppeteer-core'
 
 export class GooglePlacesScraper {
   private browser: Browser | null = null
 
   async init() {
-    this.browser = await chromium.puppeteer.launch({
-      args: chromium.args,
+    this.browser = await puppeteer.launch({
+      args: [
+        ...chromium.args,
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--single-process'
+      ],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath,
       headless: chromium.headless,
@@ -23,7 +30,7 @@ export class GooglePlacesScraper {
       const url = `https://www.google.fr/maps/search/${searchQuery}`
       
       await page.setRequestInterception(true)
-      page.on('request', (request: Request) => {
+      page.on('request', (request) => {
         if (['image', 'stylesheet', 'font'].includes(request.resourceType())) {
           request.abort()
         } else {
@@ -31,10 +38,7 @@ export class GooglePlacesScraper {
         }
       })
 
-      await page.goto(url, { 
-        waitUntil: 'networkidle0',
-        timeout: 30000 
-      })
+      await page.goto(url, { waitUntil: 'networkidle0' })
 
       // Gestion du popup de consentement
       await new Promise(resolve => setTimeout(resolve, 2000));

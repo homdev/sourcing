@@ -4,9 +4,11 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  CHROME_EXECUTABLE_PATH = "/usr/bin/chromium"
+  PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "true"
 
 [functions]
-  external_node_modules = ["@prisma/client", "@sparticuz/chromium"]
+  external_node_modules = ["@prisma/client", "@sparticuz/chromium", "puppeteer-core"]
   included_files = ["prisma/**"]
   node_bundler = "esbuild"
 
