@@ -6,8 +6,8 @@
   NODE_VERSION = "18"
 
 [functions]
-  external_node_modules = ["@prisma/client"]
-  included_files = ["prisma/**"]
+  external_node_modules = ["@prisma/client", "chrome-aws-lambda", "puppeteer-core"]
+  included_files = ["prisma/**", "node_modules/chrome-aws-lambda/**"]
   node_bundler = "esbuild"
 
 [functions.api]

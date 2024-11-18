@@ -5,12 +5,10 @@ export class GooglePlacesScraper {
   private browser: Browser | null = null
 
   async init() {
-    const executablePath = process.env.CHROME_EXECUTABLE_PATH || await chromium.executablePath
-
     this.browser = await chromium.puppeteer.launch({
-      args: [...chromium.args, '--hide-scrollbars', '--disable-web-security'],
+      args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath,
+      executablePath: await chromium.executablePath,
       headless: chromium.headless,
       ignoreHTTPSErrors: true
     })
