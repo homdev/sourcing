@@ -5,10 +5,24 @@ export class GooglePlacesScraper {
   private browser: Browser | null = null
 
   async init() {
+    const executablePath = await chromium.executablePath
+
+    if (!executablePath) {
+      throw new Error('Chrome executable not found')
+    }
+
     this.browser = await chromium.puppeteer.launch({
-      args: chromium.args,
+      args: [
+        ...chromium.args,
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--disable-gpu',
+        '--lang=fr-FR,fr'
+      ],
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
+      executablePath: executablePath,
       headless: chromium.headless,
       ignoreHTTPSErrors: true
     })
