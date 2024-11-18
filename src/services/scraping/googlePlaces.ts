@@ -1,5 +1,5 @@
 import chromium from 'chrome-aws-lambda'
-import { Browser } from 'puppeteer-core'
+import { Browser, Page, Request } from 'puppeteer-core'
 
 export class GooglePlacesScraper {
   private browser: Browser | null = null
@@ -37,7 +37,7 @@ export class GooglePlacesScraper {
       const url = `https://www.google.fr/maps/search/${searchQuery}`
       
       await page.setRequestInterception(true)
-      page.on('request', (request) => {
+      page.on('request', (request: Request) => {
         if (['image', 'stylesheet', 'font'].includes(request.resourceType())) {
           request.abort()
         } else {
@@ -243,7 +243,7 @@ export class GooglePlacesScraper {
     }
   }
 
-  private async setupPage() {
+  private async setupPage(): Promise<Page> {
     if (!this.browser) await this.init()
     const page = await this.browser!.newPage()
     
