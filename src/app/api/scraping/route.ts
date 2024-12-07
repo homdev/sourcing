@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server'
 import { GooglePlacesScraper } from '@/services/scraping/googlePlaces'
 import { CompanyService } from '@/services/database/company'
 
-// export const runtime = 'edge';
-// export const preferredRegion = ['fra1'];
+// Spécifier explicitement le runtime Node.js
+export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
