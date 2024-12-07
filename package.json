@@ -5,13 +5,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
-    "postinstall": "prisma generate",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "vercel-build": "prisma generate && next build",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@netlify/functions": "^2.8.2",
     "@prisma/client": "^5.22.0",
+    "@prisma/extension-accelerate": "^1.2.1",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
@@ -19,33 +21,35 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@sparticuz/chromium": "^109.0.5",
     "@tanstack/react-query": "^5.60.5",
+    "@types/puppeteer-core": "^7.0.4",
+    "@vercel/webpack-asset-relocator-loader": "^1.7.3",
     "axios": "^1.7.7",
-    "bullmq": "^5.26.2",
     "cheerio": "^1.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "json2csv": "^6.0.0-alpha.2",
     "lucide-react": "^0.460.0",
     "next": "14.2.15",
-    "puppeteer-core": "^19.7.5",
+    "puppeteer-core": "^23.10.1",
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",
-    "react-query": "^3.39.3",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.23.8"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/json2csv": "^5.0.7",
     "@types/node": "^20",
-    "@types/puppeteer": "^5.4.7",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "ignore-loader": "^0.1.2",
+    "node-loader": "^2.0.0",
     "postcss": "^8",
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "5.0.4",
+    "webpack": "^5.88.0"
   }
 }

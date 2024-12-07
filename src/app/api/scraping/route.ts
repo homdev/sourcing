@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import { GooglePlacesScraper } from '@/services/scraping/googlePlaces'
 import { CompanyService } from '@/services/database/company'
 
+// export const runtime = 'edge';
+// export const preferredRegion = ['fra1'];
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const { query, location } = await request.json()
@@ -46,3 +50,4 @@ export async function POST(request: Request) {
     )
   }
 }
+

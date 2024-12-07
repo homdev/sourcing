@@ -6,6 +6,8 @@ export class GooglePlacesScraper {
   private browser: Browser | null = null
 
   async init() {
+    const executablePath = process.env.CHROME_EXECUTABLE_PATH || await chromium.executablePath()
+    
     this.browser = await puppeteer.launch({
       args: [
         ...chromium.args,
@@ -15,8 +17,8 @@ export class GooglePlacesScraper {
         '--single-process'
       ],
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: true,
+      executablePath,
+      headless: "new",
       ignoreHTTPSErrors: true
     })
   }
@@ -80,6 +82,8 @@ export class GooglePlacesScraper {
       let noNewResultsCount = 0;
       const MAX_NO_NEW_RESULTS = 3;
       
+      const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
       while (noNewResultsCount < MAX_NO_NEW_RESULTS) {
         console.log('Défilement pour charger plus de résultats...');
         const { previousCount, newCount } = await scrollAndWait() as { previousCount: number, newCount: number };
@@ -91,7 +95,7 @@ export class GooglePlacesScraper {
           noNewResultsCount = 0;
         }
 
-        await page.waitForTimeout(3000);
+        await wait(3000);
       }
 
       // Extraction des données

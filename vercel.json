@@ -1,0 +1,14 @@
+{
+    "functions": {
+      "src/app/api/**/*": {
+        "memory": 1024,
+        "maxDuration": 60
+      }
+    },
+    "build": {
+      "env": {
+        "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true"
+      }
+    },
+    "installCommand": "npm install --legacy-peer-deps"
+  }

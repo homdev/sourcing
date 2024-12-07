@@ -4,9 +4,7 @@ declare module '@sparticuz/chromium' {
       width: number
       height: number
     }
-    export const executablePath: Promise<string>
-    export const headless: boolean
-    export const puppeteer: {
-      launch: (options?: any) => Promise<any>
-    }
+    export const executablePath: () => Promise<string>
+    export const headless: boolean | 'new'
+    export const puppeteer: any
   }

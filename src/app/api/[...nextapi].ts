@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export const config = {
-  runtime: 'edge',
-  regions: ['fra1'],
-}
+// export const runtime = 'edge';
+// export const preferredRegion = ['fra1'];
+export const dynamic = 'force-dynamic';
 
 export default async function handler(req: NextRequest) {
   const { pathname, searchParams } = new URL(req.url)

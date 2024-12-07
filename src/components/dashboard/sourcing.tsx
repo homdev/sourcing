@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { MapPin, Phone, Globe, Star } from 'lucide-react'
+import { MapPin, Phone, Globe, Star, Download } from 'lucide-react'
 import toast from 'react-hot-toast'
 import type { CompanyListViewProps, CompanyGridViewProps } from '@/types/dashboard'
 
@@ -26,7 +26,7 @@ export function SourcingContent() {
   } = useQuery({
     queryKey: ['companies', currentPage, itemsPerPage, searchQuery],
     queryFn: async () => {
-      const response = await fetch(`/.netlify/functions/api/companies?${new URLSearchParams({
+      const response = await fetch(`/api/companies?${new URLSearchParams({
         page: currentPage.toString(),
         limit: itemsPerPage.toString(),
         filters: JSON.stringify({
@@ -49,7 +49,7 @@ export function SourcingContent() {
 
   const scrapeMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch('/.netlify/functions/api/scraping', {
+      const response = await fetch('/api/scraping', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: searchQuery, location: searchLocation })
@@ -70,6 +70,34 @@ export function SourcingContent() {
       toast.error(error.message || 'Erreur lors du scraping')
     }
   })
+
+  const handleExport = async () => {
+    try {
+      const response = await fetch(`/api/companies/export?${new URLSearchParams({
+        filters: JSON.stringify({
+          search: searchQuery,
+          location: searchLocation
+        })
+      })}`)
+
+      if (!response.ok) throw new Error('Erreur lors de l\'export')
+
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `companies_export_${new Date().toISOString().split('T')[0]}.csv`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+
+      toast.success('Export réussi')
+    } catch (error) {
+      toast.error('Erreur lors de l\'export')
+      console.error(error)
+    }
+  }
 
   const renderContent = () => {
     if (isLoading) {
@@ -147,12 +175,23 @@ export function SourcingContent() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Résultats ({companiesData?.total || 0} entreprises)</CardTitle>
-          <div className="flex items-center gap-2">
-            <Switch
-              checked={viewMode === 'grid'}
-              onCheckedChange={(checked) => setViewMode(checked ? 'grid' : 'list')}
-            />
-            <span>Vue grille</span>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              onClick={handleExport}
+              disabled={!companiesData?.items?.length}
+              className="flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Exporter
+            </Button>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={viewMode === 'grid'}
+                onCheckedChange={(checked) => setViewMode(checked ? 'grid' : 'list')}
+              />
+              <span>Vue grille</span>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
